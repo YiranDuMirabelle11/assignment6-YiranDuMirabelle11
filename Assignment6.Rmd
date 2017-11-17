@@ -21,9 +21,9 @@ library(rpart)
 #Data
 ```{r}
 #Upload the data sets MOOC1.csv and MOOC2.csv
-M1 <- 
+M1 <- read.csv("~/Desktop/github/Assignment 6/MOOC1.csv")
 
-M2 <- 
+M2 <- read.csv("~/Desktop/github/Assignment 6/MOOC2.csv")
 
 ```
 
@@ -31,14 +31,14 @@ M2 <-
 ```{r}
 #Using the rpart package generate a classification tree predicting certified from the other variables in the M1 data frame.
 
-c.tree1 <- 
+c.tree1 <- rpart(certified ~ assignment + grade + forum.posts, method="class",control = rpart.control(minsplit = 5,minbucket= 5, cp=0), data=M1)
 
 #Check the results from the classifcation tree using the printcp() command
-
+printcp(c.tree1)
 
 
 #Plot your tree
-
+post(c.tree1, file="tree1.ps", title = "Tentative Classification of payment over score, assignment grade and forum posts")
 
 
 ```
@@ -48,7 +48,7 @@ c.tree1 <-
 #If we are worried about overfitting we can remove nodes form our tree using the prune() command, setting cp to the CP value from the table that corresponds to the number of nodes we want the tree to terminate at. Let's set it to two nodes.
 
 ```{r}
-c.tree2 <- prune(c.tree1, cp = 0.047739)
+c.tree2 <- prune(c.tree1, cp = 0.002450)
 
 #Visualize this tree and compare it to the one you generated earlier
 
@@ -67,3 +67,12 @@ table(M2$certified, M2$predict1)
 table(M2$certified, M2$predict2)
 
 ```
+
+The ratio of correctness is (Model 1,Model 2):
+
+```{r}
+(246+6979)/10000
+
+(80+7627)/10000
+```
+Therefore, by Model 1, the correctness of prediction for data 2 is 72.25% while for Model 2 (the pruned version) the correctness is 77%. The second version has a lower error rate and we suppose that Model 1 overfit the dataset 1 and cannot predict dataset 2 as well as the pruned one.
